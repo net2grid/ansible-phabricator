@@ -1,0 +1,36 @@
+- name: Create Phabricator directory
+  file:
+    path: "{{ installation_directory }}"
+    state: directory
+
+- name: Download git Arcanist repositories
+  git:
+    repo: "{{ item.value }}"
+    dest: "{{ installation_directory }}/{{ item.key }}"
+    accept_hostkey: yes
+  with_dict: "{{ phabricator_repositories }}"
+
+- name: Add arc to users' PATH - user version
+  lineinfile:
+    dest: "~/.bashrc"
+    line: "export PATH=\"$PATH:{{ installation_directory }}/arcanist/bin/\""
+  become: true
+  become_user: vagrant
+
+- name: Add arc to users' PATH - shell version
+  lineinfile:
+    dest: "~/.bash_profile"
+    line: "export PATH=\"$PATH:{{ installation_directory }}/arcanist/bin/\""
+  become: true
+  become_user: vagrant
+
+- name: Configure Phabricator url
+  command: "arc set-config default {{ phabricator_url }}"
+  become: true
+  become_user: vagrant
+
+- name: Create Arcanist aliases
+  command: "arc alias {{ item }}"
+  with_items: "{{ arc_aliases }}"
+  become: true
+  become_user: vagrant
