@@ -24,13 +24,10 @@
   become: true
   become_user: vagrant
 
-- name: Configure Phabricator url
-  command: "arc set-config default {{ phabricator_url }}"
-  become: true
-  become_user: vagrant
-
-- name: Create Arcanist aliases
-  command: "arc alias {{ item }}"
-  with_items: "{{ arc_aliases }}"
-  become: true
-  become_user: vagrant
+- name: Copy Arcanist configuration file
+  template:
+    src: ".arcrc.j2"
+    dest: "/home/vagrant/.arcrc"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
