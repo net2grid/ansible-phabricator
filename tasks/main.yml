@@ -31,3 +31,11 @@
     owner: vagrant
     group: vagrant
     mode: 0600
+
+- name: Copy global Arcanist configuration file
+  template:
+    src: "arcconfig.j2"
+    dest: "/etc/arcconfig"
+    owner: root
+    group: root
+    mode: 0644
